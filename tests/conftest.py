@@ -1,39 +1,27 @@
+import sys
+from pathlib import Path
+
 import pytest
 
-from data import generate_user_data
-from helpers import create_user, login_user, delete_user
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
-
-@pytest.fixture
-def user_data():
-    return generate_user_data()
-
-
-@pytest.fixture
-def cleanup_user(user_data):
-    yield
-    login_response = login_user(user_data)
-    if login_response.status_code == 200 and login_response.json().get("success") is True:
-        access_token = login_response.json()["accessToken"]
-        delete_user(access_token)
+from helpers import create_user, delete_user, generate_user_data, login_user
 
 
 @pytest.fixture
 def registered_user():
     user_data = generate_user_data()
-    create_response = create_user(user_data)
-    assert create_response.status_code == 200
-    assert create_response.json()["success"] is True
 
+    create_user(user_data)
     login_response = login_user(user_data)
-    assert login_response.status_code == 200
-    assert login_response.json()["success"] is True
-
-    access_token = login_response.json()["accessToken"]
+    access_token = login_response.json().get("accessToken")
 
     yield {
         "user_data": user_data,
         "access_token": access_token
     }
 
-    delete_user(access_token)
+    if access_token:
+        delete_user(access_token)

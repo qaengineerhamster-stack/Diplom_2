@@ -1,7 +1,21 @@
+import random
+import string
+
 import allure
 import requests
 
-from urls import REGISTER_URL, LOGIN_URL, USER_URL, INGREDIENTS_URL, ORDERS_URL
+from data import USER_PASSWORD
+from urls import LOGIN_URL, ORDERS_URL, REGISTER_URL, USER_URL
+
+
+@allure.step("Сгенерировать данные пользователя")
+def generate_user_data():
+    random_string = "".join(random.choices(string.ascii_lowercase, k=8))
+    return {
+        "email": f"test_{random_string}@mail.com",
+        "password": USER_PASSWORD,
+        "name": f"name_{random_string}"
+    }
 
 
 @allure.step("Создать пользователя")
@@ -9,7 +23,7 @@ def create_user(user_data):
     return requests.post(REGISTER_URL, json=user_data)
 
 
-@allure.step("Авторизовать пользователя")
+@allure.step("Логин пользователя")
 def login_user(user_data):
     return requests.post(
         LOGIN_URL,
@@ -26,18 +40,6 @@ def delete_user(access_token):
         USER_URL,
         headers={"Authorization": access_token}
     )
-
-
-@allure.step("Получить список ингредиентов")
-def get_ingredients():
-    response = requests.get(INGREDIENTS_URL)
-    return response.json()["data"]
-
-
-@allure.step("Получить id ингредиентов")
-def get_ingredient_ids(count=2):
-    ingredients = get_ingredients()
-    return [ingredient["_id"] for ingredient in ingredients[:count]]
 
 
 @allure.step("Создать заказ")

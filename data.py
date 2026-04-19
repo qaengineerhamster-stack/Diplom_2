@@ -1,26 +1,7 @@
-import random
-import string
+USER_PASSWORD = "123456"
 
-
-def generate_user_data():
-    suffix = ''.join(random.choices(string.ascii_lowercase, k=8))
-    return {
-        "email": f"test_{suffix}@mail.com",
-        "password": "123456",
-        "name": f"name_{suffix}"
-    }
-
-
-INVALID_LOGIN_DATA = {
-    "email": "wrong_user@mail.com",
-    "password": "wrong_password"
-}
-
-
-def get_user_without_field(field_name):
-    user_data = generate_user_data()
-    user_data.pop(field_name)
-    return user_data
-
-
-INVALID_INGREDIENT_HASHES = ["invalid_hash_12345"]
+USER_ALREADY_EXISTS_MESSAGE = "User already exists"
+REQUIRED_FIELDS_MESSAGE = "Email, password and name are required fields"
+LOGIN_INVALID_CREDENTIALS_MESSAGE = "email or password are incorrect"
+ORDER_INGREDIENTS_REQUIRED_MESSAGE = "Ingredient ids must be provided"
+ORDER_INVALID_HASH_MESSAGE = "One or more ids provided are incorrect"
