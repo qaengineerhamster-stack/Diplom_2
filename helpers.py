@@ -14,7 +14,7 @@ def generate_user_data():
     return {
         "email": f"test_{random_string}@mail.com",
         "password": USER_PASSWORD,
-        "name": f"name_{random_string}"
+        "name": f"name_{random_string}",
     }
 
 
@@ -29,17 +29,14 @@ def login_user(user_data):
         LOGIN_URL,
         json={
             "email": user_data["email"],
-            "password": user_data["password"]
-        }
+            "password": user_data["password"],
+        },
     )
 
 
 @allure.step("Удалить пользователя")
 def delete_user(access_token):
-    return requests.delete(
-        USER_URL,
-        headers={"Authorization": access_token}
-    )
+    return requests.delete(USER_URL, headers={"Authorization": access_token})
 
 
 @allure.step("Создать заказ")
@@ -48,8 +45,4 @@ def create_order(ingredients, access_token=None):
     if access_token:
         headers["Authorization"] = access_token
 
-    return requests.post(
-        ORDERS_URL,
-        json={"ingredients": ingredients},
-        headers=headers
-    )
+    return requests.post(ORDERS_URL, json={"ingredients": ingredients}, headers=headers)
